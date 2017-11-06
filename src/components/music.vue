@@ -119,8 +119,10 @@
         let self = this;
         $.ajax({
 //          url: `/api/search/get/?s=${songName}&limit=40&type=1&offset=0`,
-//          url: `http://songsearch.kugou.com/song_search_v2?keyword=${songName}&page=1&clientver=&platform=WebFilter`,
-          url: `/song_search_v2?keyword=${songName}&page=1&clientver=&platform=WebFilter`,
+          //这个是不通过跨域处理的链接
+          url: `http://songsearch.kugou.com/song_search_v2?keyword=${songName}&page=1&clientver=&platform=WebFilter`,
+          //这个是通过跨域处理的链接
+//          url: `/song_search_v2?keyword=${songName}&page=1&clientver=&platform=WebFilter`,
           type: "GET",
           dataType: "json",
           success: function (res) {
@@ -140,8 +142,10 @@
         var audio = document.querySelector('#audio');
         $.ajax({
 //          url: `/api/search/get/?s=${songName}&limit=40&type=1&offset=0`,
-//          url: `http://www.kugou.com/yy/index.php?r=play/getdata&hash=${self.musicId}`,
-          url: `/yy/index.php?r=play/getdata&hash=${self.musicId}`,
+          //这个是不通过跨域处理的链接
+          url: `http://www.kugou.com/yy/index.php?r=play/getdata&hash=${self.musicId}`,
+          //这个是通过跨域处理的链接
+//          url: `/yy/index.php?r=play/getdata&hash=${self.musicId}`,
           type: "GET",
           dataType: "json",
           success: function (res) {
