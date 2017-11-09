@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Music from '../components/music.vue'
 import resize from "../tools/resize";
 
+
 Vue.use(Router)
 
 export default new Router({
