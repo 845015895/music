@@ -19,7 +19,7 @@
         <div>{{allTime}}</div>
       </div>
       <audio id="audio" v-on:ended="musicEnd($event)" v-bind:src="musicUrl" controlsList="nodownload" preload="auto"
-             v-on:canplay="canplaythrough">
+             v-on:canplay="canplaythrough" autoplay="autoplay">
         亲 您的浏览器不支持html5的audio标签
       </audio>
     </div>
@@ -157,7 +157,7 @@
 
         } else if(songName === "新歌榜"){
           $.ajax({
-//            http://m.kugou.com/rank/info/?rankid=8888&page=1&json=true
+//            url: ` http://m.kugou.com/rank/info/?rankid=8888&page=1&json=true`,
             url: `/rank/info/?rankid=27&page=1&json=true`,
             type: "GET",
             dataType: "json",
@@ -234,12 +234,15 @@
       play: function () {
         var audio = document.querySelector('#audio');
         if (!this.isPlaying) {
-          audio.load();
+//          audio.load();
           audio.play();
+          document.addEventListener("WeixinJSBridgeReady", function () {
+//            audio.load();
+            audio.play();
+          }, false);
           this.isPlaying = true;
           this.showTime = true;
         }
-        this.audioAutoPlay(audio);
       },
       stop: function () {
         var audio = document.querySelector('#audio');
@@ -280,6 +283,8 @@
           self.currentIndex = 0;
         }
         self.setMusicUrl(self.currentIndex);
+
+
       },
       next() {
         let audio = document.querySelector("#audio");
