@@ -1,59 +1,65 @@
 <template>
-  <div id="main" class="wrapper">
-    <img src="../assets/player_logo1.png" alt="" class="player_logo">
-    <div class="audioBar">
-      <!--<marquee>{{song_name + " - " + author_name}}</marquee>-->
-      <div class="showName">
-        <p class="songName">{{song_name}}</p>
-        <p class="authorName">{{author_name}}</p>
-      </div>
-      <div id="progress">
-        <!--创建加载进度条-->
-        <span id="bar">
+  <div>
+    <loading v-if="loading">
+    </loading>
+    <div id="main" class="wrapper" v-if="!loading">
+      <img src="../assets/player_logo1.png" alt="" class="player_logo">
+      <div class="audioBar">
+        <!--<marquee>{{song_name + " - " + author_name}}</marquee>-->
+        <div class="showName">
+          <p class="songName">{{song_name}}</p>
+          <p class="authorName">{{author_name}}</p>
+        </div>
+        <div id="progress">
+          <!--创建加载进度条-->
+          <span id="bar">
           <!--创建控制点-->
         <div id="control"></div>
         </span>
-      </div>
-      <div class="time" v-show="showTime">
-        <div>{{playTime}}</div>
-        <div>{{allTime}}</div>
-      </div>
-      <audio id="audio" v-on:ended="musicEnd($event)" v-bind:src="musicUrl" controlsList="nodownload" preload="auto"
-             v-on:canplay="canplaythrough" autoplay="autoplay">
-        亲 您的浏览器不支持html5的audio标签
-      </audio>
-    </div>
-    <s class="line"></s>
-    <input type="text" v-model="musicName" class="searchBox" placeholder="歌曲/歌手"/>
-    <button v-on:click="getData(musicName)" class="searchBtn">搜索</button>
-    <div v-bind:class="{songListLy:showLyrics,songList:!showLyrics}">
-      <div class="lyrics" v-show="showLyrics">
-        <div class="lyricsBar">
-          <p v-for="(item,index) in lyrics" v-bind:class="{light:isLight===index}">{{item.lyricsStr}}</p>
         </div>
+        <div class="time" v-show="showTime">
+          <div>{{playTime}}</div>
+          <div>{{allTime}}</div>
+        </div>
+        <audio id="audio" v-on:ended="musicEnd($event)" v-bind:src="musicUrl" controlsList="nodownload" preload="auto"
+               v-on:canplay="canplaythrough" autoplay="autoplay">
+          亲 您的浏览器不支持html5的audio标签
+        </audio>
       </div>
-      <ul v-show="!showLyrics">
-        <li v-for="(item,index) in songList" v-show="songList" v-on:click="setMusicUrl(index)">
-          <div class="musicBar" v-show="!showBank">
-            <p>{{item.SongName}}</p>
-            <p>{{item.SingerName}}</p>
+      <s class="line"></s>
+      <input type="text" v-model="musicName" class="searchBox" placeholder="歌曲/歌手"/>
+      <button v-on:click="getData(musicName)" class="searchBtn">搜索</button>
+      <div v-bind:class="{songListLy:showLyrics,songList:!showLyrics}">
+        <div class="lyrics" v-show="showLyrics">
+          <div class="lyricsBar">
+            <p v-for="(item,index) in lyrics" v-bind:class="{light:isLight===index}">{{item.lyricsStr}}</p>
           </div>
-          <div class="musicBar" v-show="showBank">
-            <p>{{item.filename}}</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="audioTool">
-      <div class="skipBtn back" v-on:click="next()"></div>
-      <div class="btn playBtn" id="playBtn" v-show="!isPlaying" v-on:click="play()"></div>
-      <div class="btn pauseBtn" v-show="isPlaying" v-on:click="stop()"></div>
-      <div class="skipBtn next" v-on:click="back()"></div>
+        </div>
+        <ul v-show="!showLyrics">
+          <li v-for="(item,index) in songList" v-show="songList" v-on:click="setMusicUrl(index)">
+            <div class="musicBar" v-show="!showBank">
+              <p>{{item.SongName}}</p>
+              <p>{{item.SingerName}}</p>
+            </div>
+            <div class="musicBar" v-show="showBank">
+              <p>{{item.filename}}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="audioTool">
+        <div class="skipBtn back" v-on:click="next()"></div>
+        <div class="btn playBtn" id="playBtn" v-show="!isPlaying" v-on:click="play()"></div>
+        <div class="btn pauseBtn" v-show="isPlaying" v-on:click="stop()"></div>
+        <div class="skipBtn next" v-on:click="back()"></div>
+      </div>
     </div>
   </div>
+
 </template>
 <script>
-  import $ from "jquery"
+  import $ from "jquery";
+  import loading from "./myLoading.vue";
   import resize from "../tools/resize";
 
   export default ({
@@ -77,20 +83,28 @@
         showTime: false,
         isLight: false,
         currentIndex: "",
-        showBank: false
+        showBank: false,
+        loading: true
 
       }
 
+    },
+    components: {
+      loading
     },
     created: function () {
 //      document.body.addEventListener('touchmove', function (event) {
 //        event.preventDefault();
 //      }, false);
       let self = this;
+
       self.getData("");
     },
     mounted: function () {
       let self = this;
+      setInterval(function () {
+        self.loading = false;
+      }, 3000);
       let audio = document.querySelector("#audio");
       let bar = document.querySelector("#bar");
       let progress = document.querySelector("#progress");
@@ -132,6 +146,7 @@
         self.auto();
       }, false);
 
+
 //      playBtn.click();
 
     },
@@ -140,7 +155,7 @@
         let self = this;
         if (songName === "热歌榜") {
           $.ajax({
-//            http://m.kugou.com/rank/info/?rankid=8888&page=1&json=true
+//            url: `//m.kugou.com/rank/info/?rankid=8888&page=1&json=true`,
             url: `/rank/info/?rankid=8888&page=1&json=true`,
             type: "GET",
             dataType: "json",
@@ -155,7 +170,7 @@
             }
           })
 
-        } else if(songName === "新歌榜"){
+        } else if (songName === "新歌榜") {
           $.ajax({
 //            url: ` http://m.kugou.com/rank/info/?rankid=8888&page=1&json=true`,
             url: `/rank/info/?rankid=27&page=1&json=true`,
@@ -171,11 +186,11 @@
               console.log(arguments);
             }
           })
-        }else {
+        } else {
           $.ajax({
 //          url: `/api/search/get/?s=${songName}&limit=40&type=1&offset=0`,
             //这个是不通过跨域处理的链接
-//          url: `http://songsearch.kugou.com/song_search_v2?keyword=${songName}&page=1&clientver=&platform=WebFilter`,
+//            url: `http://songsearch.kugou.com/song_search_v2?keyword=${songName}&page=1&clientver=&platform=WebFilter`,
             //这个是通过跨域处理的链接
             url: `/song_search_v2?keyword=${songName}&page=1&clientver=&platform=WebFilter`,
             type: "GET",
@@ -333,7 +348,6 @@
   .wrapper {
     width: 100%;
     min-height: 85%;
-    position: relative;
     box-sizing: border-box;
     text-align: center;
     background: url("../assets/Background.jpg") no-repeat;
