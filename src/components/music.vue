@@ -2,7 +2,7 @@
   <div>
     <loading v-if="loading">
     </loading>
-    <div id="main" class="wrapper" v-if="!loading">
+    <div id="main" class="wrapper" >
       <img src="../assets/player_logo1.png" alt="" class="player_logo">
       <div class="audioBar">
         <!--<marquee>{{song_name + " - " + author_name}}</marquee>-->
@@ -104,7 +104,7 @@
       let self = this;
       setInterval(function () {
         self.loading = false;
-      }, 3000);
+      }, 4000);
       let audio = document.querySelector("#audio");
       let bar = document.querySelector("#bar");
       let progress = document.querySelector("#progress");
