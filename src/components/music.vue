@@ -142,13 +142,6 @@
         }
       }, false);
 
-      document.addEventListener("WeixinJSBridgeReady", function () {
-        self.auto();
-      }, false);
-
-
-//      playBtn.click();
-
     },
     methods: {
       getData: function (songName) {
